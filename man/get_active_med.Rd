@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_active_med.R
 \name{get_active_med}
 \alias{get_active_med}
-\title{Get Active Mediators :: Null Estimation Function From the HDMT package}
+\title{Get Active Mediator Indexes}
 \usage{
 get_active_med(
   y,
@@ -36,7 +36,7 @@ get_active_med(
 A vector of the indexes for active mediators.
 }
 \description{
-Get Active Mediators :: Null Estimation Function From the HDMT package
+Get Active Mediator Indexes
 }
 \examples{
 data(ExampleData) # Load ExampleData from the package

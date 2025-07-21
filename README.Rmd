@@ -160,20 +160,6 @@ print(active_mediators_Bonferroni)
 ```
 
 
-# Competing packages
-
-```{r}
-## Install the HIMA package
-# install.packages('HIMA')
-
-suppressMessages(library(HIMA))
-
-HIMA::hima_dblasso(x, M, y)
-```
-
-Out of the 8 active mediators, `M[, 1], M[,3], M[,4], M[,5], M[,6], M[,7], M[,8]` were identified as active by HIMA (specifically HIMA2).
-
-
 
 # Reference
 

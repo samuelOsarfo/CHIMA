@@ -1,4 +1,4 @@
-#' Get Active Mediators
+#' Get Active Mediator Indexes
 #'
 #' @param y  vector of outcomes
 #' @param x vector of exposures
