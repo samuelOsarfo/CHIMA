@@ -1,5 +1,5 @@
 ###########################################################################################
-#### 16. function to compute the p-values to test H_{0}: \alpha_{j}=0 based on the OLS ####
+#### Function to compute the p-values to test H_{0}: \alpha_{j}=0 based on the OLS ####
 ###########################################################################################
 
 # Inputs
