@@ -170,6 +170,8 @@ active_mediators<- get_active_med(y, x, M)
 #> Step 2: Approximate Orthogonalization Estimates   -----  03:10:08 PM
 #> Step 3: Joint Significance Testing   -----  03:10:09 PM
 #> Complete!!   03:10:09 PM
+
+
 print(active_mediators)
 #> [1] 1 2 3 4 5 6 7 8
 
