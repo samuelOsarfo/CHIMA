@@ -97,8 +97,6 @@ through Bioconductor:
   - `get_active_med.mod`: Uses a modified version of the
     `null_estimation` function.
   - `get_active_med.hdmt`: Uses the implementation in the HDMT package.
-  - `get_active_med.fast`: Supports all three methods above and allows
-    specifying the `variant` for null estimation.
 - **Arguments**:
   - `y`: Outcome vector.
   - `x`: Exposure vector.
@@ -148,25 +146,25 @@ ao_result <- app_orth(y, x, chosen_med)
 print("Test statistics for selected mediators:")
 #> [1] "Test statistics for selected mediators:"
 print(ao_result$ts)
-#>  [1] -3.75826498  2.70347084  3.03633972 -3.76620437 -4.01791153  3.13063631
-#>  [7] -6.05640638 -5.16999566 -4.35493798 -1.38661339 -0.09340543  1.58528676
-#> [13] -0.94270143 -0.63245508 -0.30139365 -2.74596189 -2.97098707 -2.55250077
-#> [19]  0.65876921 -0.49195454  1.06206013  0.96490120 -2.41892222  0.08835574
-#> [25] -0.29576057 -0.52333947  0.54546505  0.85870828 -1.87864295  1.10073641
-#> [31]  0.62165408  0.66164001  1.48642045  0.61393906 -1.10077012  1.58216275
-#> [37]  0.16449956  0.65972119
+#>  [1] -3.72024578  2.67612211  3.00562363 -3.72810486 -3.97726571  3.09896630
+#>  [7] -5.99513882 -5.11769518 -4.31088274 -1.37258620 -0.09246053  1.56924975
+#> [13] -0.93316491 -0.62605707 -0.29834471 -2.71818331 -2.94093210 -2.52667928
+#> [19]  0.65210500 -0.48697785  1.05131616  0.95514011 -2.39445202  0.08746192
+#> [25] -0.29276861 -0.51804528  0.53994704  0.85002145 -1.85963831  1.08960119
+#> [31]  0.61536533  0.65494676  1.47138359  0.60772835 -1.08963456  1.56615734
+#> [37]  0.16283545  0.65304735
 
 print("P-values for selected mediators:")
 #> [1] "P-values for selected mediators:"
 print(ao_result$pval)
-#>  [1] 1.710956e-04 6.861947e-03 2.394694e-03 1.657481e-04 5.871623e-05
-#>  [6] 1.744280e-03 1.391961e-09 2.340994e-07 1.331046e-05 1.655597e-01
-#> [11] 9.255815e-01 1.129012e-01 3.458336e-01 5.270895e-01 7.631143e-01
-#> [16] 6.033377e-03 2.968443e-03 1.069527e-02 5.100440e-01 6.227515e-01
-#> [21] 2.882084e-01 3.345943e-01 1.556657e-02 9.295939e-01 7.674129e-01
-#> [26] 6.007380e-01 5.854337e-01 3.905015e-01 6.029326e-02 2.710114e-01
-#> [31] 5.341694e-01 5.082020e-01 1.371679e-01 5.392556e-01 2.709967e-01
-#> [36] 1.136124e-01 8.693379e-01 5.094328e-01
+#>  [1] 1.990290e-04 7.447950e-03 2.650368e-03 1.929251e-04 6.971225e-05
+#>  [6] 1.941971e-03 2.033117e-09 3.092919e-07 1.626041e-05 1.698810e-01
+#> [11] 9.263321e-01 1.165898e-01 3.507348e-01 5.312775e-01 7.654401e-01
+#> [16] 6.564146e-03 3.272263e-03 1.151466e-02 5.143334e-01 6.262740e-01
+#> [21] 2.931134e-01 3.395068e-01 1.664522e-02 9.303044e-01 7.696990e-01
+#> [26] 6.044267e-01 5.892336e-01 3.953132e-01 6.293672e-02 2.758889e-01
+#> [31] 5.383135e-01 5.125020e-01 1.411874e-01 5.433677e-01 2.758742e-01
+#> [36] 1.173118e-01 8.706480e-01 5.137258e-01
 ```
 
 # Identifying Active Mediators
@@ -174,37 +172,37 @@ print(ao_result$pval)
 ``` r
 # Using HDMT (HIMA null_estimation)
 active_mediators.hima <- get_active_med.hima(y, x, M)
-#> Step 1: Ridge-HOLP Screening   -----  04:06:23 PM
-#> Step 2: Approximate Orthogonalization Estimates   -----  04:06:23 PM
-#> Step 3: Joint Significance Testing   -----  04:06:24 PM
-#> Complete!!   04:06:25 PM
+#> Step 1: Ridge-HOLP Screening   -----  07:34:08 PM
+#> Step 2: Approximate Orthogonalization Estimates   -----  07:34:08 PM
+#> Step 3: Joint Significance Testing   -----  07:34:10 PM
+#> Complete!!   07:34:13 PM
 print(active_mediators.hima)
 #> [1] 1 2 3 4 5 6 7 8
 
 # Using HDMT (modified null_estimation)
 active_mediators.mod <- get_active_med.mod(y, x, M)
-#> Step 1: Ridge-HOLP Screening   -----  04:06:25 PM
-#> Step 2: Approximate Orthogonalization Estimates   -----  04:06:25 PM
-#> Step 3: Joint Significance Testing   -----  04:06:26 PM
-#> Complete!!   04:06:26 PM
+#> Step 1: Ridge-HOLP Screening   -----  07:34:13 PM
+#> Step 2: Approximate Orthogonalization Estimates   -----  07:34:13 PM
+#> Step 3: Joint Significance Testing   -----  07:34:14 PM
+#> Complete!!   07:34:14 PM
 print(active_mediators.mod)
 #> [1] 1 2 3 4 5 6 7 8
 
 # Using HDMT package implementation
 active_mediators.hdmt <- get_active_med.hdmt(y, x, M)
-#> Step 1: Ridge-HOLP Screening   -----  04:06:26 PM
-#> Step 2: Approximate Orthogonalization Estimates   -----  04:06:26 PM
-#> Step 3: Joint Significance Testing   -----  04:06:27 PM
-#> Complete!!   04:06:27 PM
+#> Step 1: Ridge-HOLP Screening   -----  07:34:14 PM
+#> Step 2: Approximate Orthogonalization Estimates   -----  07:34:14 PM
+#> Step 3: Joint Significance Testing   -----  07:34:15 PM
+#> Complete!!   07:34:15 PM
 print(active_mediators.hdmt)
 #> [1] 1 2 3 4 5 6 7 8
 
 # Using Bonferroni correction
 active_mediators_Bonferroni <- get_active_med.hima(y, x, M, pval.adjust='bonferroni')
-#> Step 1: Ridge-HOLP Screening   -----  04:06:27 PM
-#> Step 2: Approximate Orthogonalization Estimates   -----  04:06:27 PM
-#> Step 3: Joint Significance Testing   -----  04:06:28 PM
-#> Complete!!   04:06:28 PM
+#> Step 1: Ridge-HOLP Screening   -----  07:34:15 PM
+#> Step 2: Approximate Orthogonalization Estimates   -----  07:34:15 PM
+#> Step 3: Joint Significance Testing   -----  07:34:16 PM
+#> Complete!!   07:34:16 PM
 print(active_mediators_Bonferroni)
 #> [1] 1 4 5 7 8
 ```
@@ -223,26 +221,26 @@ suppressMessages(library(HIMA))
 #> "ndiMatrix" of class "replValueSp"; definition not updated
 
 HIMA::hima_dblasso(x, M, y)
-#> Step 1: Sure Independent Screening ...  (4:06:28 PM)
-#> Step 2: De-biased Lasso Estimates ...   (4:06:28 PM)
-#> Step 3: Joint significance test ...     (4:06:35 PM)
-#> Done!     (4:06:35 PM)
+#> Step 1: Sure Independent Screening ...  (7:34:18 PM)
+#> Step 2: De-biased Lasso Estimates ...   (7:34:18 PM)
+#> Step 3: Joint significance test ...     (7:34:25 PM)
+#> Done!     (7:34:25 PM)
 #>   Index  alpha_hat   alpha_se   beta_hat   beta_se        IDE      rimp
-#> 1     1 -0.4989049 0.06159061 -0.7713661 0.2273450  0.3848383  7.465352
-#> 2     3  0.6351005 0.05489418  1.3000239 0.2661458  0.8256458 16.016431
-#> 3     4  0.5432349 0.05966641 -0.7974223 0.2396099 -0.4331876  8.403263
-#> 4     5  0.7310222 0.04849277 -1.0652445 0.2750990 -0.7787174 15.106081
-#> 5     6 -0.7606745 0.04613191  0.9062336 0.2796277 -0.6893488 13.372450
-#> 6     7 -0.7180654 0.04946084 -1.4829216 0.2617912  1.0648347 20.656377
-#> 7     8 -0.7294041 0.04861566 -1.3413962 0.2703725  0.9784199 18.980045
+#> 1     1 -0.4989049 0.06159061 -0.7496780 0.2385597  0.3740180  7.329343
+#> 2     3  0.6351005 0.05489418  1.2367930 0.2811790  0.7854878 15.392600
+#> 3     4  0.5432349 0.05966641 -0.8091499 0.2513469 -0.4395585  8.613689
+#> 4     5  0.7310222 0.04849277 -1.0239189 0.2910554 -0.7485075 14.667924
+#> 5     6 -0.7606745 0.04613191  0.9481523 0.2956501 -0.7212353 14.133492
+#> 6     7 -0.7180654 0.04946084 -1.4278684 0.2765547  1.0253029 20.092072
+#> 7     8 -0.7294041 0.04861566 -1.3832008 0.2858711  1.0089124 19.770879
 #>           pmax
-#> 1 6.914881e-04
-#> 2 1.036232e-06
-#> 3 8.747125e-04
-#> 4 1.078474e-04
-#> 5 1.191708e-03
-#> 6 1.474369e-08
-#> 7 7.002678e-07
+#> 1 1.675018e-03
+#> 2 1.089531e-05
+#> 3 1.285240e-03
+#> 4 4.348918e-04
+#> 5 1.341231e-03
+#> 6 2.429447e-07
+#> 7 1.307913e-06
 ```
 
 Out of the 8 active mediators,

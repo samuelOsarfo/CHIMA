@@ -14,10 +14,10 @@ knitr::opts_chunk$set(
 ```
 
 ---
-title: "Documentation For hdjmtTest"
+title: "Documentation For CHIMA"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{hdjmtTest}
+  %\VignetteIndexEntry{CHIMA}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -31,7 +31,7 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-The `hdjmtTest` package performs high-dimensional mediator screening and testing in the presence of high correlation among mediators using Ridge-HOLP and Approximate Orthogonalization methods. In addition to accounting for correlation, the method is designed to detect mediators that exhibit joint effects. This vignette demonstrates how to use the primary functions with a simulated dataset, `ExampleData`.
+The `CHIMA` package performs high-dimensional mediator screening and testing in the presence of high correlation among mediators using Ridge-HOLP and Approximate Orthogonalization methods. In addition to accounting for correlation, the method is designed to detect mediators that exhibit joint effects. This vignette demonstrates how to use the primary functions with a simulated dataset, `ExampleData`.
 
 # Structure of ExampleData
 
@@ -51,7 +51,7 @@ The example data provided with the package contains:
 ```{r}
 #library(devtools)
 
-#devtools::install_github('samuelOsarfo/hdjmtTest',force=TRUE)
+#devtools::install_github('samuelOsarfo/CHIMA',force=TRUE)
 ```
 
 If package "qvalue" is not found, please first install "qvalue" package through Bioconductor: https://www.bioconductor.org/packages/release/bioc/html/qvalue.html
@@ -61,7 +61,7 @@ If package "qvalue" is not found, please first install "qvalue" package through 
 #    install.packages("BiocManager")
 #BiocManager::install("qvalue")
 
-#devtools::install_github('samuelOsarfo/hdjmtTest',force=TRUE)
+#devtools::install_github('samuelOsarfo/CHIMA',force=TRUE)
 ```
 
 # Summary of Functions
@@ -91,16 +91,11 @@ If package "qvalue" is not found, please first install "qvalue" package through 
   - `k`: Scalar used to compute projection directions (default is 1).
 
 
-## `get_active_med.hima`, `get_active_med.mod`, `get_active_med.hdmt`
+## `get_active_med`
 
-- **Description**: These are wrapper functions that combine screening and testing to identify active mediators using different joint-significance test variants.
+- **Description**: This is wrapper function that combine screening and testing to identify active mediators.
 - **Usage**:  
-  `get_active_med.<variant>(y, x, M, COV.S=NULL, pval.adjust='HDMT', d=NULL, r=1, k=1)`  
-- **Variants**:
-  - `get_active_med.hima`: Uses the `null_estimation` function from the original HIMA repository.
-  - `get_active_med.mod`: Uses a modified version of the `null_estimation` function.
-  - `get_active_med.hdmt`: Uses the implementation in the HDMT package.
-  - `get_active_med.fast`: Supports all three methods above and allows specifying the `variant` for null estimation.
+  `get_active_med(y, x, M, COV.S=NULL, pval.adjust='HDMT', d=NULL, r=1, k=1)`  
 
 - **Arguments**:
   - `y`: Outcome vector.
@@ -114,7 +109,7 @@ If package "qvalue" is not found, please first install "qvalue" package through 
 
 ```{r}
 # Load the ExampleData
-library(hdjmtTest)
+library(CHIMA)
 data(ExampleData)
 
 # Extract the components
@@ -154,24 +149,16 @@ print(ao_result$pval)
 # Identifying Active Mediators
 
 ```{r}
-# Using HDMT (HIMA null_estimation)
-active_mediators.hima <- get_active_med.hima(y, x, M)
-print(active_mediators.hima)
+# Using HDMT For FDR control
+active_mediators<- get_active_med(y, x, M)
+print(active_mediators)
 
-# Using HDMT (modified null_estimation)
-active_mediators.mod <- get_active_med.mod(y, x, M)
-print(active_mediators.mod)
-
-# Using HDMT package implementation
-active_mediators.hdmt <- get_active_med.hdmt(y, x, M)
-print(active_mediators.hdmt)
 
 # Using Bonferroni correction
-active_mediators_Bonferroni <- get_active_med.hima(y, x, M, pval.adjust='bonferroni')
+active_mediators_Bonferroni <- get_active_med(y, x, M, pval.adjust='bonferroni')
 print(active_mediators_Bonferroni)
-
-
 ```
+
 
 # Competing packages
 
