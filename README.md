@@ -163,7 +163,7 @@ print(ao_result$pval)
 #> [36] 1.185612e-01 8.710832e-01 5.151558e-01
 ```
 
-# Identifying Active Mediators
+# Identifying Active Mediator Indexes
 
 ``` r
 # Using HDMT For FDR control
