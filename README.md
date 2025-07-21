@@ -175,15 +175,6 @@ active_mediators<- get_active_med(y, x, M)
 print(active_mediators)
 #> [1] 1 2 3 4 5 6 7 8
 
-
-# Using Bonferroni correction
-active_mediators_Bonferroni <- get_active_med(y, x, M, pval.adjust='bonferroni')
-#> Step 1: Ridge-HOLP Screening   -----  03:10:09 PM
-#> Step 2: Approximate Orthogonalization Estimates   -----  03:10:09 PM
-#> Step 3: Joint Significance Testing   -----  03:10:10 PM
-#> Complete!!   03:10:10 PM
-print(active_mediators_Bonferroni)
-#> [1] 1 4 5 7 8
 ```
 
 # Reference
