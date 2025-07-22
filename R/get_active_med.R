@@ -1,4 +1,4 @@
-#' Identify Active Mediator
+#' Identify Active Mediators
 #'
 #' @param y  vector of outcomes
 #' @param x vector of exposures
@@ -8,7 +8,7 @@
 #' @param d the number of screened mediators. Default value is \eqn{d =  n/\log(n)}.
 #' @param r  a penalty parameter for the Ridge-HOLP. Default value is `1`
 #' @param k  a scalar for computing projection directions for AO. Default value is `1`.
-#' @param alpha  level of significance. Default value is `0.05`.
+#' @param alpha  Target FDR level. Default value is `0.05`.
 #'
 #' @return A data frame with columns
 #'   \describe{
@@ -29,7 +29,7 @@
 #' # Get active mediators
 #' results <- get_active_med(y, x, M)
 #'
-#' # Print the indexes of active mediators
+#' # Print the results of active mediators
 #' print(results)
 #'
 #'

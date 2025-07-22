@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_active_med.R
 \name{get_active_med}
 \alias{get_active_med}
-\title{Identify Active Mediator}
+\title{Identify Active Mediators}
 \usage{
 get_active_med(
   y,
@@ -33,7 +33,7 @@ get_active_med(
 
 \item{k}{a scalar for computing projection directions for AO. Default value is \code{1}.}
 
-\item{alpha}{level of significance. Default value is \code{0.05}.}
+\item{alpha}{Target FDR level. Default value is \code{0.05}.}
 }
 \value{
 A data frame with columns
@@ -46,7 +46,7 @@ A data frame with columns
 The data frame has zero rows if no active mediator is detected.#'
 }
 \description{
-Identify Active Mediator
+Identify Active Mediators
 }
 \examples{
 data(ExampleData) # Load ExampleData from the package
@@ -57,7 +57,7 @@ M <- ExampleData$M #  'M' is a matrix of mediators in ExampleData
 # Get active mediators
 results <- get_active_med(y, x, M)
 
-# Print the indexes of active mediators
+# Print the results of active mediators
 print(results)
 
 
