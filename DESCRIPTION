@@ -21,3 +21,4 @@ LazyData: True
 LazyDataCompression: xz
 URL: https://github.com/samuelOsarfo/CHIMA
 BugReports: https://github.com/samuelOsarfo/CHIMA/issues
+VignetteBuilder: knitr

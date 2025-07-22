@@ -3,3 +3,6 @@
 .RData
 .Ruserdata
 README.Rmd
+inst/doc
+/doc/
+/Meta/
