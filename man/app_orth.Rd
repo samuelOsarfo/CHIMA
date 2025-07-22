@@ -18,7 +18,7 @@ app_orth(y, x, chosen_M, COV.S = NULL, k = 1)
 \item{k}{A scalar for computing projection directions. Default value is 1.}
 }
 \value{
-A a vector of test statistics (ts) each of which asymptotically follow std. normal under the null and
+A vector of test statistics (ts) each of which asymptotically follow std. normal under the null and
 a vector of the corresponding p-values
 }
 \description{
@@ -36,6 +36,7 @@ chosen_M <- M[, chosen_ind]
 
 # Apply Approximate Orthogonalization
 orth_result <- app_orth(y, x, chosen_M)
+print(orth_result$bhat) # Display bhat estimates
 print(orth_result$ts) # Display test statistics
 print(orth_result$pval) # Display p-values
 

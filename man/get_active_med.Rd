@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_active_med.R
 \name{get_active_med}
 \alias{get_active_med}
-\title{Get Active Mediator Indexes}
+\title{Identify Active Mediator}
 \usage{
 get_active_med(
   y,
@@ -12,7 +12,8 @@ get_active_med(
   pval.adjust = "HDMT",
   d = NULL,
   r = 1,
-  k = 1
+  k = 1,
+  alpha = 0.05
 )
 }
 \arguments{
@@ -31,12 +32,21 @@ get_active_med(
 \item{r}{a penalty parameter for the Ridge-HOLP. Default value is \code{1}}
 
 \item{k}{a scalar for computing projection directions for AO. Default value is \code{1}.}
+
+\item{alpha}{level of significance. Default value is \code{0.05}.}
 }
 \value{
-A vector of the indexes for active mediators.
+A data frame with columns
+\describe{
+\item{Index}{Column index of active mediators in \code{M}.}
+\item{alpha_hat}{Estimated \eqn{\alpha_j}.}
+\item{beta_hat}{Estimated \eqn{\beta_j}.}
+\item{P_value}{Raw joint p‑value \eqn{\max(p_{\alpha j}, p_{\beta j})}.}
+}
+The data frame has zero rows if no active mediator is detected.#'
 }
 \description{
-Get Active Mediator Indexes
+Identify Active Mediator
 }
 \examples{
 data(ExampleData) # Load ExampleData from the package
@@ -45,16 +55,10 @@ x <- ExampleData$x #  'x' is a vector of exposures in ExampleData
 M <- ExampleData$M #  'M' is a matrix of mediators in ExampleData
 
 # Get active mediators
-#using HDMT to control FDR (default)
-active_mediators_index <- get_active_med(y, x, M)
+results <- get_active_med(y, x, M)
 
 # Print the indexes of active mediators
-print(active_mediators_index)
+print(results)
 
 
-#using Bonferroni correction to control FWER
-active_mediators_index <- get_active_med(y, x, M, pval.adjust='bonferroni')
-
-#Print the indexes of active mediators
-print(active_mediators_index)
 }

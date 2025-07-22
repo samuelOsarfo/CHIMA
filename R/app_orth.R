@@ -6,7 +6,7 @@
 #' @param COV.S a \code{data.frame} or \code{matrix} of covariates.
 #' @param k A scalar for computing projection directions. Default value is 1.
 #'
-#' @return A a vector of test statistics (ts) each of which asymptotically follow std. normal under the null and
+#' @return A vector of test statistics (ts) each of which asymptotically follow std. normal under the null and
 #'    a vector of the corresponding p-values
 #' @export
 #'
@@ -22,6 +22,7 @@
 #'
 #' # Apply Approximate Orthogonalization
 #' orth_result <- app_orth(y, x, chosen_M)
+#' print(orth_result$bhat) # Display bhat estimates
 #' print(orth_result$ts) # Display test statistics
 #' print(orth_result$pval) # Display p-values
 #'
@@ -33,7 +34,7 @@ app_orth <- function(y, x, chosen_M, COV.S=NULL, k = 1){
   MCX <- cbind(chosen_M, XC)
   q1 <- ncol(MCX)
   q2 <- 0
-  ts <- pval  <- rep(NA, q1-1)
+  ts <- pval  <- bhat <- rep(NA, q1-1)
 
 
 
@@ -43,7 +44,7 @@ app_orth <- function(y, x, chosen_M, COV.S=NULL, k = 1){
     MCX  <- cbind(chosen_M, COV.S, XC)
     q1 <- ncol(MCX)
     q2 <- ncol(COV.S)
-    ts <- pval  <- rep(NA, (q1-(q2 + 1)))
+    ts <- pval <-bhat <- rep(NA, (q1-(q2 + 1)))
   }
 
   sig_hat <- selectiveInference::estimateSigma(MCX, y)$sigmahat # compute the estimates of standard deviation of random errors
@@ -53,8 +54,12 @@ app_orth <- function(y, x, chosen_M, COV.S=NULL, k = 1){
   # and the resulting test statistics and p-values for each selected mediator
   for(j in 1:(q1-(q2 + 1))){
 
-    # Step 1: Compute projection vector q_v (Equation 13 in the paper)
+    # Compute projection vector q_v (Equation 13 in the paper)
     proj_vec <- solve(k*diag(n) + tcrossprod(MCX[,-j]))%*%MCX[,j] # dimension : n by 1
+
+    #compute bhat b_v
+    bhat[j]<- sum(proj_vec*y)/sum(proj_vec*MCX[, j])
+
 
     # compute the test statistic which asymptotically follows a standard normal dist'n
     ts[j] <- sum(proj_vec*y)/(sig_hat*sqrt(sum(proj_vec**2)))
@@ -63,5 +68,5 @@ app_orth <- function(y, x, chosen_M, COV.S=NULL, k = 1){
     pval[j] <- 2*stats::pnorm(abs(ts[j]), lower.tail = F)
   }
 
-  return(list(ts = ts, pval = pval))
+  return(list(bhat=bhat, ts = ts, pval = pval))
 }

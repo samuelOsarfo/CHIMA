@@ -1,4 +1,4 @@
-#' Get Active Mediator Indexes
+#' Identify Active Mediator
 #'
 #' @param y  vector of outcomes
 #' @param x vector of exposures
@@ -8,8 +8,16 @@
 #' @param d the number of screened mediators. Default value is \eqn{d =  n/\log(n)}.
 #' @param r  a penalty parameter for the Ridge-HOLP. Default value is `1`
 #' @param k  a scalar for computing projection directions for AO. Default value is `1`.
+#' @param alpha  level of significance. Default value is `0.05`.
 #'
-#' @return A vector of the indexes for active mediators.
+#' @return A data frame with columns
+#'   \describe{
+#'     \item{Index}{Column index of active mediators in \code{M}.}
+#'     \item{alpha_hat}{Estimated \eqn{\alpha_j}.}
+#'     \item{beta_hat}{Estimated \eqn{\beta_j}.}
+#'     \item{P_value}{Raw joint p‑value \eqn{\max(p_{\alpha j}, p_{\beta j})}.}
+#'   }
+#'   The data frame has zero rows if no active mediator is detected.#'
 #' @export
 #'
 #' @examples
@@ -19,38 +27,60 @@
 #' M <- ExampleData$M #  'M' is a matrix of mediators in ExampleData
 #'
 #' # Get active mediators
-#' #using HDMT to control FDR (default)
-#' active_mediators_index <- get_active_med(y, x, M)
+#' results <- get_active_med(y, x, M)
 #'
 #' # Print the indexes of active mediators
-#' print(active_mediators_index)
+#' print(results)
 #'
 #'
-#'#using Bonferroni correction to control FWER
-#' active_mediators_index <- get_active_med(y, x, M, pval.adjust='bonferroni')
-#'
-#' #Print the indexes of active mediators
-#'print(active_mediators_index)
-get_active_med <- function(y, x, M, COV.S=NULL, pval.adjust='HDMT', d=NULL, r=1,  k=1){
+get_active_med <- function(y, x, M, COV.S=NULL, pval.adjust='HDMT', d=NULL, r=1,  k=1, alpha=0.05){
 
-  #screen mediators
-  message("Step 1: Ridge-HOLP Screening   -----  ", format(Sys.time(), "%I:%M:%S %p"))
-     chosen_ind <- medsc_holp(y, x, M,  COV.S, d ,r)
-
-  #get p-values and test statistics for \beta_j's in outcome model
-     message("Step 2: Approximate Orthogonalization Estimates   -----  ", format(Sys.time(), "%I:%M:%S %p"))
-     ao_obj <- app_orth(y, x, M[, chosen_ind], COV.S, k)
+    #screen mediators
+    msg("Step 1: Ridge–HOLP Screening   -----  ", format(Sys.time(), "%H:%M:%S  %P"))
+    chosen_ind <- medsc_holp(y, x, M, COV.S, d, r)
 
 
-  #get p-values and test statistics for \alpha_j's in mediator model
-     alp_all <- comp_alpha(x, M[,chosen_ind], COV.S)
+    #get bhats, p-values, and test statistics for \beta_j's in outcome model
+    msg("Step 2: Approximate Orthogonalization Estimates   -----  ", format(Sys.time(), "%H:%M:%S %p"))
+    ao_obj <- app_orth(y, x, M[, chosen_ind], COV.S, k)
 
-  #get index for active mediators in chosen mediators
-     message("Step 3: Joint Significance Testing   -----  ", format(Sys.time(), "%I:%M:%S %p"))
-     active_index <- js_test(chosen_ind, alp_all$pval, ao_obj$pval, method=pval.adjust)
 
-  #results
-     message("Complete!!   ", format(Sys.time(), "%I:%M:%S %p"))
+    #get p-values and test statistics for \alpha_j's in mediator model
+    alp_all <- comp_alpha(x, M[,chosen_ind], COV.S)
 
-    return(active_index)
+    #get index for active mediators in chosen mediators
+    msg("Step 3: Joint Significance Testing   -----  ", format(Sys.time(), "%H:%M:%S %p"))
+    active_index <- tryCatch(
+      js_test(chosen_ind,
+              alp_all$pval,
+              ao_obj$pval,
+              method = pval.adjust,
+              alpha),
+      error = function(e) {
+        msg("js_test() failed: ", conditionMessage(e),
+             ". Returning empty result.")
+        integer(0)
+      }
+    )
+
+    if (length(active_index) == 0L || all(is.na(active_index))) {
+      msg("No active mediators detected. Returning empty result.")
+      return(empty_active_df())
+    }
+
+     #get raw pvalues for active mediators
+     Pvalues <-cbind(ao_obj$pval[active_index], alp_all$pval[active_index])
+     Pvalues<- apply(Pvalues, 1, max)
+
+    #results
+    msg("Complete!!   ", format(Sys.time(), "%H:%M:%S %p"))
+
+
+    data.frame(Index=active_index,
+                          alpha_hat=alp_all$alpha_est[active_index],
+                          beta_hat=ao_obj$bhat[active_index],
+                          P_value=Pvalues,
+                          row.names=colnames(M)[active_index]
+                          )
+
 }

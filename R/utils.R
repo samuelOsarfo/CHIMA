@@ -1,3 +1,24 @@
+#Internal message wrapper
+msg <- function(...) {
+  message(...)
+}
+
+
+
+# Empty result for get_active_med()
+empty_active_df <- function() {
+  data.frame(
+    Index     = integer(0),
+    alpha_hat = numeric(0),
+    beta_hat  = numeric(0),
+    P_value   = numeric(0)
+  )
+}
+
+
+
+
+
 ###########################################################################################
 #### Function to compute the p-values to test H_{0}: \alpha_{j}=0 based on the OLS ####
 ###########################################################################################
@@ -36,9 +57,144 @@ comp_alpha <- function(x, chosen_M, COV.S = NULL) {
   return(list(ts = ts, pval = pval, alpha_est = alpha_est))
 }
 
+###########################################################################################
+### Modified Null_estimation function
+###########################################################################################
+mod_null_estimation <- function(input_pvalues, eps = 10^-8){
+  ## updated function that automatically choose best lambda that result in better behave q-q plot
+  if (is.null(ncol(input_pvalues)))
+    stop("input_pvalues should be a matrix or data frame")
+  if (ncol(input_pvalues) != 2)
+    stop("inpute_pvalues should have 2 column")
+  input_pvalues <- matrix(as.numeric(input_pvalues), nrow = nrow(input_pvalues))
+  if (sum(stats::complete.cases(input_pvalues)) < nrow(input_pvalues))
+    warning("input_pvalues contains NAs to be removed from analysis")
+  input_pvalues <- input_pvalues[stats::complete.cases(input_pvalues),
+  ]
+  if (!is.null(nrow(input_pvalues)) & nrow(input_pvalues) <
+      1)
+    stop("input_pvalues doesn't have valid p-values")
+
+  ### first identify features that may come from H11 (alternatives for both hypotheses) ###
+  #library(qvalue)
+  #ish11 <- qvalue(input_pvalues[,1])$qvalue<0.25 & qvalue(input_pvalues[,2])$qvalue<0.25
+
+  pcut <- seq(0.1, 0.8, 0.1)
+  frac1 <- rep(0, 8)
+  frac2 <- rep(0, 8)
+  frac12 <- rep(0, 8)
+  for (i in 1:8) {
+    frac1[i] <- mean(input_pvalues[, 1] >= pcut[i])/(1 - pcut[i])
+    frac2[i] <- mean(input_pvalues[, 2] >= pcut[i])/(1 - pcut[i])
+    frac12[i] <- mean(input_pvalues[, 2] >= pcut[i] & input_pvalues[,1] >= pcut[i])/(1 - pcut[i])^2
+  }
+
+  alphaout <- matrix(0,4,5)
+  ll <- 1
+  qqslope <- rep(0,4)
+  for (lambda in c(0.5,0.6,0.7,0.8)) {
+    alpha00 <- min(frac12[pcut >= lambda][1], 1)
+    if (stats::ks.test(input_pvalues[, 1], "punif", 0, 1, alternative = "greater")$p > 0.05)
+      alpha1 <- 1 else alpha1 <- min(frac1[pcut >= lambda][1], 1)
+      if (stats::ks.test(input_pvalues[, 2], "punif", 0, 1, alternative = "greater")$p > 0.05)
+        alpha2 <- 1 else alpha2 <- min(frac2[pcut >= lambda][1], 1)
+        if (alpha00 == 1) {
+          alpha01 <- 0
+          alpha10 <- 0
+          alpha11 <- 0
+        } else {
+          if (alpha1 == 1 & alpha2 == 1) {
+            alpha01 <- 0
+            alpha10 <- 0
+            alpha11 <- 0
+            alpha00 <- 1
+          }
+          if (alpha1 == 1 & alpha2 != 1) {
+            alpha10 <- 0
+            alpha11 <- 0
+            alpha01 <- alpha1 - alpha00
+            alpha01 <- max(0, alpha01)
+            alpha00 <- 1 - alpha01
+          }
+          if (alpha1 != 1 & alpha2 == 1) {
+            alpha01 <- 0
+            alpha11 <- 0
+            alpha10 <- alpha2 - alpha00
+            alpha10 <- max(0, alpha10)
+            alpha00 <- 1 - alpha10
+          }
+          if (alpha1 != 1 & alpha2 != 1) {
+            alpha10 <- alpha2 - alpha00
+            alpha10 <- max(0, alpha10)
+            alpha01 <- alpha1 - alpha00
+            alpha01 <- max(0, alpha01)
+            if ((1 - alpha00 - alpha01 - alpha10) < 0) {
+              alpha11 <- 0
+              alpha10 <- 1 - alpha1
+              alpha01 <- 1 - alpha2
+              alpha00 <- 1 - alpha10 - alpha01
+            }
+            else {
+              alpha11 <- 1 - alpha00 - alpha01 - alpha10
+            }
+          }
+        }
+
+        pmax <- apply(input_pvalues,1,max)
+        pmax <- pmax[order(pmax)]
+        nnulls <- sum(pmax>0.8)
+        nmed <- nrow(input_pvalues)
+        pexp <- rep(0,nnulls)
+        for (i in 1:nmed) {
+          c <- (-i/nmed)
+          b <- alpha01+alpha10-eps
+          a <- 1-b
+          pexp[i] <- (-b+sqrt(b^2-4*a*c))/(2*a)
+        }
+        xx <- -log(pexp[(nmed-nnulls+1):nmed],base=10)
+        yy <- -log(pmax[(nmed-nnulls+1):nmed],base=10)
+        fit1 <- stats::lm(yy~xx-1)
+
+        qqslope[ll]<- fit1$coef[1]
+        alphaout[ll,1] <- alpha10
+        alphaout[ll,2] <- alpha01
+        alphaout[ll,3] <- alpha00
+        alphaout[ll,4] <- alpha1
+        alphaout[ll,5] <- alpha2
+
+        ll <- ll+1
+
+  }
+
+  bestslope <- which.min(qqslope)
+  alpha.null <- list(alpha10 = alphaout[bestslope,1], alpha01 = alphaout[bestslope,2],alpha00 = alphaout[bestslope,3], alpha1 = alphaout[bestslope,4], alpha2 = alphaout[bestslope,5])
+  return(alpha.null)
+}
+
+#####################################################################################
+###  Function for fall back for HDMT:null_estimation
+####################################################################################
+
+
+safe_nullprop <- function(pv) {
+  out1 <- tryCatch(HDMT::null_estimation(pv), error = identity)
+  # good result?
+  if (!inherits(out1, "error") && !is.null(out1) && !anyNA(out1)) return(out1)
+
+  # fallback
+  out2 <- tryCatch(mod_null_estimation(pv), error = identity)
+  if (inherits(out2, "error") || is.null(out2) || anyNA(out2)) {
+    stop("Both null_estimation() and mod_null_estimation() failed.")
+  }
+  out2
+}
+
+
+
+
 
 ###########################################################################################
-#### 17. function to conduct the joint significance test as the existing approaches do ####
+#### Function to conduct the joint significance test as the existing approaches do ####
 ###########################################################################################
 
 # Inputs
@@ -61,11 +217,12 @@ js_test <- function(chosen_ind, pval_alp, pval_beta, method = "HDMT", alpha = 0.
   if (method == "hdmt") {
     # Add small noise to avoid ties
     PA <- cbind(pval_alp, pval_beta)
+
     N0 <- nrow(PA) * ncol(PA)
     input_pvalues <- PA + matrix(stats::runif(N0, 0, 1e-10), nrow(PA), 2)
 
     # Estimate null proportions
-    nullprop <- HDMT::null_estimation(input_pvalues)
+    nullprop <- safe_nullprop(input_pvalues)
 
     # Estimate FDR
     fdrcut <- HDMT::fdr_est(
@@ -87,6 +244,7 @@ js_test <- function(chosen_ind, pval_alp, pval_beta, method = "HDMT", alpha = 0.
     max_pval <- pmax(adjp_alp, adjp_beta)
     which_sig <- chosen_ind[max_pval <= alpha]
   }
+
 
   return(which_sig)
 }

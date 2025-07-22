@@ -7,7 +7,9 @@ Documentation For CHIMA
 
 The `CHIMA` package performs high-dimensional mediator screening and
 testing in the presence of high correlation among mediators using
-Ridge-HOLP and Approximate Orthogonalization methods. This vignette demonstrates how to use the
+Ridge-HOLP and Approximate Orthogonalization methods. In addition to
+accounting for correlation, the method is designed to detect mediators
+that exhibit joint effects. This vignette demonstrates how to use the
 primary functions with a simulated dataset, `ExampleData`.
 
 # Structure of ExampleData
@@ -137,44 +139,60 @@ print(chosen_ind)
 chosen_med <- M[, medsc_holp(y, x, M)]
 ao_result <- app_orth(y, x, chosen_med)
 
+print("beta_j's estimates for selected mediators:")
+#> [1] "beta_j's estimates for selected mediators:"
+print(ao_result$bhat)
+#>  [1] -0.85454891  0.72798593  0.91841399 -0.88883970 -1.23070731  0.99816884
+#>  [7] -1.68936358 -1.52036730 -1.01303848 -0.41023057 -0.02754499  0.36738506
+#> [13] -0.27628426 -0.12108618 -0.06281622 -0.57080517 -0.61709430 -0.54748920
+#> [19]  0.14286997 -0.10754716  0.21732091  0.19888873 -0.48871179  0.01647673
+#> [25] -0.05994742 -0.10851191  0.11491766  0.17757867 -0.37963078  0.24259622
+#> [31]  0.12993300  0.13889385  0.30378477  0.12870413 -0.24002365  0.34967104
+#> [37]  0.03512818  0.13361500
+
 print("Test statistics for selected mediators:")
 #> [1] "Test statistics for selected mediators:"
 print(ao_result$ts)
-#>  [1] -3.70761795  2.66703840  2.99542148 -3.71545035 -3.96376546  3.08844731
-#>  [7] -5.97478920 -5.10032391 -4.29625008 -1.36792715 -0.09214669  1.56392316
-#> [13] -0.92999742 -0.62393201 -0.29733202 -2.70895683 -2.93094953 -2.51810283
-#> [19]  0.64989152 -0.48532488  1.04774762  0.95189802 -2.38632440  0.08716505
-#> [25] -0.29177485 -0.51628685  0.53811427  0.84713618 -1.85332604  1.08590270
-#> [31]  0.61327656  0.65272364  1.46638919  0.60566551 -1.08593595  1.56084125
-#> [37]  0.16228273  0.65083067
+#>  [1] -3.72024578  2.67612211  3.00562363 -3.72810486 -3.97726571  3.09896630
+#>  [7] -5.99513882 -5.11769518 -4.31088274 -1.37258620 -0.09246053  1.56924975
+#> [13] -0.93316491 -0.62605707 -0.29834471 -2.71818331 -2.94093210 -2.52667928
+#> [19]  0.65210500 -0.48697785  1.05131616  0.95514011 -2.39445202  0.08746192
+#> [25] -0.29276861 -0.51804528  0.53994704  0.85002145 -1.85963831  1.08960119
+#> [31]  0.61536533  0.65494676  1.47138359  0.60772835 -1.08963456  1.56615734
+#> [37]  0.16283545  0.65304735
 
 print("P-values for selected mediators:")
 #> [1] "P-values for selected mediators:"
 print(ao_result$pval)
-#>  [1] 2.092180e-04 7.652293e-03 2.740659e-03 2.028421e-04 7.377674e-05
-#>  [6] 2.012054e-03 2.303879e-09 3.390727e-07 1.737116e-05 1.713349e-01
-#> [11] 9.265815e-01 1.178356e-01 3.523724e-01 5.326722e-01 7.662130e-01
-#> [16] 6.749512e-03 3.379277e-03 1.179889e-02 5.157623e-01 6.274459e-01
-#> [21] 2.947549e-01 3.411487e-01 1.701773e-02 9.305403e-01 7.704588e-01
-#> [26] 6.056541e-01 5.904982e-01 3.969192e-01 6.383564e-02 2.775220e-01
-#> [31] 5.396935e-01 5.139345e-01 1.425423e-01 5.447369e-01 2.775073e-01
-#> [36] 1.185612e-01 8.710832e-01 5.151558e-01
+#>  [1] 1.990290e-04 7.447950e-03 2.650368e-03 1.929251e-04 6.971225e-05
+#>  [6] 1.941971e-03 2.033117e-09 3.092919e-07 1.626041e-05 1.698810e-01
+#> [11] 9.263321e-01 1.165898e-01 3.507348e-01 5.312775e-01 7.654401e-01
+#> [16] 6.564146e-03 3.272263e-03 1.151466e-02 5.143334e-01 6.262740e-01
+#> [21] 2.931134e-01 3.395068e-01 1.664522e-02 9.303044e-01 7.696990e-01
+#> [26] 6.044267e-01 5.892336e-01 3.953132e-01 6.293672e-02 2.758889e-01
+#> [31] 5.383135e-01 5.125020e-01 1.411874e-01 5.433677e-01 2.758742e-01
+#> [36] 1.173118e-01 8.706480e-01 5.137258e-01
 ```
 
-# Identifying Active Mediator Indexes
+# Identifying Active Mediators
 
 ``` r
 # Using HDMT For FDR control
 active_mediators<- get_active_med(y, x, M)
-#> Step 1: Ridge-HOLP Screening   -----  03:10:07 PM
-#> Step 2: Approximate Orthogonalization Estimates   -----  03:10:08 PM
-#> Step 3: Joint Significance Testing   -----  03:10:09 PM
-#> Complete!!   03:10:09 PM
-
-
+#> Step 1: Ridge–HOLP Screening   -----  09:07:19  am
+#> Step 2: Approximate Orthogonalization Estimates   -----  09:07:19 AM
+#> Step 3: Joint Significance Testing   -----  09:07:19 AM
+#> Complete!!   09:07:21 AM
 print(active_mediators)
-#> [1] 1 2 3 4 5 6 7 8
-
+#>   Index  alpha_hat   beta_hat      P_value
+#> 1     1 -0.6113066 -0.8545489 1.727772e-04
+#> 2     2  0.8772111  0.7279859 6.898397e-03
+#> 3     3  0.8735573  0.9184140 2.410453e-03
+#> 4     4  0.6831304 -0.8888397 1.673836e-04
+#> 5     5  1.1462583 -1.2307073 5.937172e-05
+#> 6     6 -1.1805587  0.9981688 1.756431e-03
+#> 7     7 -1.0269161 -1.6893636 1.426496e-09
+#> 8     8 -1.1017281 -1.5203673 2.383554e-07
 ```
 
 # Reference
