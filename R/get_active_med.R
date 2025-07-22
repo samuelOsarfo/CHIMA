@@ -36,7 +36,7 @@
 get_active_med <- function(y, x, M, COV.S=NULL, pval.adjust='HDMT', d=NULL, r=1,  k=1, alpha=0.05){
 
     #screen mediators
-    msg("Step 1: Ridge–HOLP Screening   -----  ", format(Sys.time(), "%H:%M:%S  %P"))
+    msg("Step 1: Ridge–HOLP Screening   -----  ", format(Sys.time(), "%H:%M:%S  %p"))
     chosen_ind <- medsc_holp(y, x, M, COV.S, d, r)
 
 
