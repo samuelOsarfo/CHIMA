@@ -43,7 +43,7 @@ A data frame with columns
 \item{beta_hat}{Estimated \eqn{\beta_j}.}
 \item{P_value}{Raw joint p‑value \eqn{\max(p_{\alpha j}, p_{\beta j})}.}
 }
-The data frame has zero rows if no active mediator is detected.#'
+The data frame has zero rows if no active mediator is detected.
 }
 \description{
 Identify Active Mediators

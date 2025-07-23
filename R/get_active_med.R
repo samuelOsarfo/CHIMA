@@ -17,7 +17,7 @@
 #'     \item{beta_hat}{Estimated \eqn{\beta_j}.}
 #'     \item{P_value}{Raw joint p‑value \eqn{\max(p_{\alpha j}, p_{\beta j})}.}
 #'   }
-#'   The data frame has zero rows if no active mediator is detected.#'
+#'   The data frame has zero rows if no active mediator is detected.
 #' @export
 #'
 #' @examples
@@ -36,7 +36,7 @@
 get_active_med <- function(y, x, M, COV.S=NULL, pval.adjust='HDMT', d=NULL, r=1,  k=1, alpha=0.05){
 
     #screen mediators
-    msg("Step 1: Ridge–HOLP Screening   -----  ", format(Sys.time(), "%H:%M:%S  %p"))
+    msg("Step 1: Ridge-HOLP Screening   -----  ", format(Sys.time(), "%H:%M:%S  %p"))
     chosen_ind <- medsc_holp(y, x, M, COV.S, d, r)
 
 
