@@ -7,9 +7,7 @@ Documentation For CHIMA
 
 The `CHIMA` package performs high-dimensional mediator screening and
 testing in the presence of high correlation among mediators using
-Ridge-HOLP and Approximate Orthogonalization methods. In addition to
-accounting for correlation, the method is designed to detect mediators
-that exhibit joint effects. This vignette demonstrates how to use the
+Ridge-HOLP and Approximate Orthogonalization methods. This vignette demonstrates how to use the
 primary functions with a simulated dataset, `ExampleData`.
 
 # Structure of ExampleData
