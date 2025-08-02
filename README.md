@@ -152,25 +152,25 @@ print(ao_result$bhat)
 print("Test statistics for selected mediators:")
 #> [1] "Test statistics for selected mediators:"
 print(ao_result$ts)
-#>  [1] -3.78188557  2.72046208  3.05542303 -3.78987486 -4.04316400  3.15031228
-#>  [7] -6.09447073 -5.20248895 -4.38230864 -1.39532822 -0.09399249  1.59525024
-#> [13] -0.94862628 -0.63643005 -0.30328790 -2.76322018 -2.98965964 -2.56854317
-#> [19]  0.66290955 -0.49504646  1.06873515  0.97096557 -2.43412508  0.08891106
-#> [25] -0.29761942 -0.52662864  0.54889328  0.86410524 -1.89045017  1.10765451
-#> [31]  0.62556116  0.66579840  1.49576256  0.61779765 -1.10768843  1.59210660
-#> [37]  0.16553343  0.66386752
+#>  [1] -3.77233689  2.71359333  3.04770856 -3.78030601 -4.03295563  3.14235822
+#>  [7] -6.07908313 -5.18935347 -4.37124399 -1.39180523 -0.09375517  1.59122248
+#> [13] -0.94623115 -0.63482316 -0.30252215 -2.75624348 -2.98211121 -2.56205800
+#> [19]  0.66123581 -0.49379655  1.06603676  0.96851404 -2.42797929  0.08868657
+#> [25] -0.29686797 -0.52529898  0.54750741  0.86192350 -1.88567708  1.10485786
+#> [31]  0.62398172  0.66411737  1.49198599  0.61623780 -1.10489169  1.58808678
+#> [37]  0.16511548  0.66219136
 
 print("P-values for selected mediators:")
 #> [1] "P-values for selected mediators:"
 print(ao_result$pval)
-#>  [1] 1.556449e-04 6.519075e-03 2.247433e-03 1.507232e-04 5.273471e-05
-#>  [6] 1.630960e-03 1.098001e-09 1.966371e-07 1.174283e-05 1.629169e-01
-#> [11] 9.251151e-01 1.106563e-01 3.428107e-01 5.244962e-01 7.616705e-01
-#> [16] 5.723414e-03 2.792885e-03 1.021270e-02 5.073885e-01 6.205673e-01
-#> [21] 2.851890e-01 3.315654e-01 1.492784e-02 9.291526e-01 7.659937e-01
-#> [26] 5.984515e-01 5.830787e-01 3.875301e-01 5.869778e-02 2.680111e-01
-#> [31] 5.316028e-01 5.055400e-01 1.347155e-01 5.367087e-01 2.679964e-01
-#> [36] 1.113608e-01 8.685241e-01 5.067751e-01
+#>  [1] 1.617257e-04 6.655782e-03 2.305934e-03 1.566357e-04 5.507968e-05
+#>  [6] 1.675929e-03 1.208717e-09 2.110255e-07 1.235406e-05 1.639814e-01
+#> [11] 9.253036e-01 1.115595e-01 3.440307e-01 5.255438e-01 7.622541e-01
+#> [16] 5.846946e-03 2.862680e-03 1.040539e-02 5.084611e-01 6.214499e-01
+#> [21] 2.864070e-01 3.327877e-01 1.518321e-02 9.293310e-01 7.665673e-01
+#> [26] 5.993754e-01 5.840302e-01 3.887296e-01 5.933848e-02 2.692212e-01
+#> [31] 5.326396e-01 5.066152e-01 1.357028e-01 5.377376e-01 2.692065e-01
+#> [36] 1.122667e-01 8.688531e-01 5.078486e-01
 ```
 
 # Identifying Active Mediators
@@ -178,10 +178,10 @@ print(ao_result$pval)
 ``` r
 # Using HDMT For FDR control
 active_mediators<- get_active_med(y, x, M)
-#> Step 1: Ridge–HOLP Screening   -----  21:50:44  PM
-#> Step 2: Approximate Orthogonalization Estimates   -----  21:50:44 PM
-#> Step 3: Joint Significance Testing   -----  21:50:44 PM
-#> Complete!!   21:50:47 PM
+#> Step 1: Ridge-HOLP Screening   -----  20:27:19  PM
+#> Step 2: Approximate Orthogonalization Estimates   -----  20:27:19 PM
+#> Step 3: Joint Significance Testing   -----  20:27:20 PM
+#> Complete!!   20:27:20 PM
 print(active_mediators)
 #>   Index  alpha_hat   beta_hat      P_value
 #> 1     1 -0.6113066 -0.8545489 1.923956e-04
@@ -193,6 +193,70 @@ print(active_mediators)
 #> 7     7 -1.0269161 -1.6893636 1.867633e-09
 #> 8     8 -1.1017281 -1.5203673 2.905756e-07
 ```
+
+# Competing Package: HIMA
+
+``` r
+library(HIMA)
+#> HIMA version 2.3.0
+#> To access full functionality of HIMA, please make sure this version is current.
+#> 
+#> Citation:
+#>   1. Zhang H, Zheng Y, Zhang Z, Gao T, Joyce B, Yoon G, Zhang W, Schwartz J,
+#>      Just A, Colicino E, Vokonas P, Zhao L, Lv J, Baccarelli A, Hou L, Liu L.
+#>      Estimating and Testing High-dimensional Mediation Effects in Epigenetic Studies.
+#>      Bioinformatics. 2016.
+#>      PMID: 27357171; PMCID: PMC5048064.
+#> 
+#>   2. Zhang H, Zheng Y, Hou L, Zheng C, Liu L.
+#>      Mediation Analysis for Survival Data with High-Dimensional Mediators.
+#>      Bioinformatics. 2021.
+#>      PMID: 34343267; PMCID: PMC8570823.
+#> 
+#>   3. Zhang H, Chen J, Feng Y, Wang C, Li H, Liu L.
+#>      Mediation effect selection in high-dimensional and compositional microbiome data.
+#>      Stat Med. 2021.
+#>      PMID: 33205470; PMCID: PMC7855955.
+#> 
+#>   4. Perera C, Zhang H, Zheng Y, Hou L, Qu A, Zheng C, Xie K, Liu L.
+#>      HIMA2: high-dimensional mediation analysis and its application in epigenome-wide DNA methylation data.
+#>      BMC Bioinformatics. 2022.
+#>      PMID: 35879655; PMCID: PMC9310002.
+#> 
+#>   5. Zhang H, Hong X, Zheng Y, Hou L, Zheng C, Wang X, Liu L.
+#>      High-Dimensional Quantile Mediation Analysis with Application to a Birth Cohort Study of Mother-Newborn Pairs.
+#>      Bioinformatics. 2024.
+#>      PMID: 38290773; PMCID: PMC10873903.
+#> 
+#>   6. Bai X, Zheng Y, Hou L, Zheng C, Liu L, Zhang H.
+#>      An Efficient Testing Procedure for High-dimensional Mediators with FDR Control.
+#>      Statistics in Biosciences. 2024.
+#> ************************************************************************************************************************
+
+ HIMA::dblassoHIMA(x, M, y)
+#> Step 1: Sure Independent Screening ...  (8:27:20 PM)
+#> Step 2: De-biased Lasso Estimates ...   (8:27:21 PM)
+#> Step 3: Joint significance test ...     (8:27:29 PM)
+#> Done!     (8:27:29 PM)
+#>   Index  alpha_hat   alpha_se   beta_hat   beta_se        IDE      rimp
+#> 1     1 -0.4989049 0.06159061 -0.7522887 0.2407388  0.3753205  7.361963
+#> 2     3  0.6351005 0.05489418  1.2125514 0.2837474  0.7700919 15.105458
+#> 3     4  0.5432349 0.05966641 -0.8081071 0.2536428 -0.4389920  8.610887
+#> 4     5  0.7310222 0.04849277 -1.0270749 0.2937140 -0.7508145 14.727329
+#> 5     6 -0.7606745 0.04613191  0.9458118 0.2983506 -0.7194550 14.112207
+#> 6     7 -0.7180654 0.04946084 -1.4210193 0.2790808  1.0203848 20.014986
+#> 7     8 -0.7294041 0.04861566 -1.4025766 0.2884823  1.0230451 20.067169
+#>           pmax
+#> 1 1.778553e-03
+#> 2 1.925594e-05
+#> 3 1.442524e-03
+#> 4 4.707808e-04
+#> 5 1.523680e-03
+#> 6 3.547092e-07
+#> 7 1.162553e-06
+```
+HIMA identifies 7 out of the 8 active mediators
+
 
 # Reference
 
