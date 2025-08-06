@@ -176,7 +176,6 @@ print(ao_result$pval)
 # Identifying Active Mediators
 
 ``` r
-# Using HDMT For FDR control
 active_mediators<- get_active_med(y, x, M)
 #> Step 1: Ridge-HOLP Screening   -----  20:27:19  PM
 #> Step 2: Approximate Orthogonalization Estimates   -----  20:27:19 PM
